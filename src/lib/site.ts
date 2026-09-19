@@ -45,12 +45,10 @@ export const siteConfig = {
   /** Reseñas de Google (link acortado): ver las opiniones. */
   reviewsUrl: "https://bit.ly/4xynH58",
   /**
-   * Place ID de Google (empieza con "ChIJ…"). Con él, el botón "Dejar mi reseña"
-   * abre directamente el cuadro para escribir la opinión.
-   * TODO: completar. Se obtiene en
-   * https://developers.google.com/maps/documentation/places/web-service/place-id
+   * Place ID de Google. Con él, el botón "Dejar mi reseña" abre directamente
+   * el cuadro para escribir la opinión.
    */
-  googlePlaceId: "",
+  googlePlaceId: "ChIJbxSQs8K3vJURot01Veu3zwc",
 
   /** Horarios para mostrar en la sección de contacto. */
   hours: [
