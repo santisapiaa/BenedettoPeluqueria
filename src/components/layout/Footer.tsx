@@ -6,11 +6,11 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-ink">
       <div className="container-x grid gap-10 py-14 sm:grid-cols-3">
         <div>
-          <span className="font-display text-xl font-semibold uppercase tracking-[0.22em]">
+          <span className="font-script text-4xl leading-none text-bone">
             {siteConfig.name}
           </span>
-          <p className="mt-1 text-[0.62rem] uppercase tracking-[0.28em] text-gold">
-            {siteConfig.tagline}
+          <p className="mt-1 text-[0.6rem] uppercase tracking-[0.3em] text-gold">
+            Peluquería · Barbería
           </p>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-bone-muted">
             {siteConfig.address.street}, {siteConfig.address.city}

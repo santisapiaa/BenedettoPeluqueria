@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Pinyon_Script, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 import { Navbar } from "@/components/layout/Navbar";
@@ -15,6 +15,14 @@ const display = Playfair_Display({
   display: "swap",
 });
 
+// Script caligráfica del logo: para el nombre y los títulos principales.
+const script = Pinyon_Script({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-script",
+  display: "swap",
+});
+
 const sans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -24,15 +32,22 @@ const sans = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | ${siteConfig.tagline} en Villa del Parque`,
+    default: `${siteConfig.name} Peluquería y Barbería | Villa del Parque`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   openGraph: {
-    title: `${siteConfig.name} | ${siteConfig.tagline}`,
+    title: `${siteConfig.name} Peluquería y Barbería`,
     description: siteConfig.description,
+    siteName: `${siteConfig.name} Peluquería y Barbería`,
+    url: "/",
     type: "website",
     locale: "es_AR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.name} Peluquería y Barbería`,
+    description: siteConfig.description,
   },
 };
 
@@ -60,7 +75,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es-AR" className={`${display.variable} ${sans.variable}`}>
+    <html
+      lang="es-AR"
+      className={`${display.variable} ${script.variable} ${sans.variable}`}
+    >
       <body>
         <script
           type="application/ld+json"

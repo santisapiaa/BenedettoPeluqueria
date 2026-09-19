@@ -45,11 +45,11 @@ export function Navbar() {
           className="leading-none"
           onClick={() => setOpen(false)}
         >
-          <span className="block font-display text-xl font-semibold uppercase tracking-[0.22em] text-bone">
+          <span className="block font-script text-[2.1rem] leading-none text-bone">
             {siteConfig.name}
           </span>
-          <span className="block pt-1.5 text-[0.62rem] uppercase tracking-[0.28em] text-gold">
-            {siteConfig.tagline}
+          <span className="block pt-1 text-[0.58rem] uppercase tracking-[0.3em] text-gold">
+            Peluquería · Barbería
           </span>
         </a>
 

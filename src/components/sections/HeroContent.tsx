@@ -36,7 +36,7 @@ export function HeroContent() {
 
       <motion.h1
         variants={item}
-        className="max-w-3xl font-display text-5xl font-semibold leading-[1.08] sm:text-6xl lg:text-7xl"
+        className="max-w-4xl font-script text-[3.5rem] leading-[1.05] sm:text-8xl lg:text-9xl"
       >
         Dos generaciones.
         <br />
