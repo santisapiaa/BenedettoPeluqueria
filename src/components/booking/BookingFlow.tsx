@@ -5,6 +5,7 @@ import { Check, ChevronLeft, Loader2 } from "lucide-react";
 import { track } from "@vercel/analytics";
 
 import { barbers } from "@/data/barbers";
+import { getHoliday } from "@/data/holidays";
 import { getService, services } from "@/data/services";
 import { openingHours, whatsappUrl } from "@/lib/site";
 import { MAX_DAYS_AHEAD, addDays, dayOfWeek, nowInBA, toMinutes } from "@/lib/time";
@@ -48,6 +49,7 @@ export function BookingFlow() {
   const [nameError, setNameError] = useState(false);
 
   const [days, setDays] = useState<string[]>([]);
+  const [closedHolidays, setClosedHolidays] = useState<string[]>([]);
   const [slots, setSlots] = useState<SlotsState>({ status: "idle", times: [] });
 
   const service = serviceId ? getService(serviceId) : undefined;
@@ -57,11 +59,15 @@ export function BookingFlow() {
   useEffect(() => {
     const today = nowInBA().date;
     const list: string[] = [];
+    const closed: string[] = [];
     for (let i = 0; i <= MAX_DAYS_AHEAD; i++) {
       const d = addDays(today, i);
-      if (openingHours[dayOfWeek(d)]) list.push(d);
+      if (!openingHours[dayOfWeek(d)]) continue;
+      // Los feriados no se ofrecen: se avisan debajo de los días.
+      (getHoliday(d) ? closed : list).push(d);
     }
     setDays(list);
+    setClosedHolidays(closed);
   }, []);
 
   // Servicio elegido desde la sección "Servicios": saltamos al paso del peluquero.
@@ -236,6 +242,12 @@ export function BookingFlow() {
               );
             })}
           </div>
+          {closedHolidays.length > 0 && (
+            <p className="mt-2 text-xs text-bone-muted">
+              Cerrado por feriado:{" "}
+              {closedHolidays.map((d) => longDate(d)).join(" · ")}.
+            </p>
+          )}
 
           <div className="mt-6 min-h-32" aria-live="polite">
             {!date && (

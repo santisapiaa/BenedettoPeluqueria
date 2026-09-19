@@ -1,3 +1,4 @@
+import { getHoliday } from "@/data/holidays";
 import { openingHours } from "@/lib/site";
 import { addDays, dayOfWeek, nowInBA, toMinutes } from "@/lib/time";
 
@@ -5,15 +6,23 @@ const DAY_NAMES = ["domingo", "lunes", "martes", "miércoles", "jueves", "vierne
 
 export type OpenStatus =
   | { open: true; closesAt: string }
-  | { open: false; next: { when: string; time: string } | null };
+  | {
+      open: false;
+      /** Nombre del feriado si hoy se está cerrado por feriado. */
+      holiday?: string;
+      next: { when: string; time: string } | null;
+    };
 
 /**
- * ¿Está abierto ahora? Usa el horario de atención de site.ts (hora de Buenos Aires).
- * `when` es lo que sigue a "Abrimos": "hoy", "mañana" o "el martes".
+ * ¿Está abierto ahora? Usa el horario de atención de site.ts (hora de Buenos Aires)
+ * y respeta los feriados. `when` es lo que sigue a "Abrimos": "hoy", "mañana" o "el martes".
  */
 export function getOpenStatus(now = nowInBA()): OpenStatus {
-  for (let i = 0; i < 8; i++) {
+  const holidayToday = getHoliday(now.date)?.name;
+
+  for (let i = 0; i < 15; i++) {
     const date = addDays(now.date, i);
+    if (getHoliday(date)) continue;
     const dow = dayOfWeek(date);
 
     for (const [from, to] of openingHours[dow] ?? []) {
@@ -27,10 +36,11 @@ export function getOpenStatus(now = nowInBA()): OpenStatus {
       } else {
         return {
           open: false,
+          holiday: holidayToday,
           next: { when: i === 1 ? "mañana" : `el ${DAY_NAMES[dow]}`, time: from },
         };
       }
     }
   }
-  return { open: false, next: null };
+  return { open: false, holiday: holidayToday, next: null };
 }

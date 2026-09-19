@@ -19,7 +19,8 @@ Abrí http://localhost:3000. Sin credenciales de Google, en desarrollo los horar
 | Dirección, teléfono, horarios, redes | `src/lib/site.ts` |
 | Servicios, precios, duraciones | `src/data/services.ts` |
 | Peluqueros, colores de calendario, colorista | `src/data/barbers.ts` |
-| Avisos (feriados, cierres) | `src/data/announcements.ts` |
+| Avisos especiales (cierres, vacaciones) | `src/data/announcements.ts` |
+| Feriados (cierre automático) y excepciones | `src/data/holidays.ts` |
 | Reseñas destacadas | `src/data/reviews.ts` |
 | Fotos del local | copiar a `public/gallery/local/` |
 | Fotos de cortes | copiar a `public/gallery/cortes/` |
@@ -38,6 +39,10 @@ Configuración: [docs/GOOGLE_CALENDAR.md](docs/GOOGLE_CALENDAR.md).
 ## Avisos de feriados o cierres
 
 Agregá una línea en `src/data/announcements.ts` con el mensaje y, opcionalmente, `from` y `until` (YYYY-MM-DD). Aparece en el inicio y sobre los turnos, y se oculta solo pasada la fecha `until`.
+
+## Feriados
+
+Los feriados nacionales (incluidos puentes) están cargados en `src/data/holidays.ts`. En esos días el sitio no ofrece turnos, muestra el cartel "Cerrado por feriado" y avisa 7 días antes (solo si cae en un día en que se atiende). Para abrir un feriado puntual, agregar su fecha a `openOnHolidays`. **Revisar el listado una vez por año** (2027 es provisorio).
 
 ## Extras
 

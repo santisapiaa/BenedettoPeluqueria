@@ -37,7 +37,7 @@ export function OpenStatus({ className }: { className?: string }) {
       {status.open
         ? `Abierto ahora · cierra a las ${status.closesAt}`
         : status.next
-          ? `Cerrado · abrimos ${status.next.when} a las ${status.next.time}`
+          ? `${status.holiday ? "Cerrado por feriado" : "Cerrado"} · abrimos ${status.next.when} a las ${status.next.time}`
           : "Cerrado"}
     </p>
   );
