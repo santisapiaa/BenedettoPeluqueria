@@ -123,15 +123,7 @@ export function BookingFlow() {
 
   const whatsappMessage =
     service && date && time
-      ? [
-          "¡Hola! Quisiera reservar un turno:",
-          `• Servicio: ${service.name} (${formatPrice(service.price)})`,
-          `• Peluquero: ${barber ? barber.name : "Sin preferencia (el que esté libre)"}`,
-          `• Día: ${longDate(date)}`,
-          `• Horario: ${time} h`,
-          "",
-          `Mi nombre es: ${name.trim()}`,
-        ].join("\n")
+      ? `Hola! Mi nombre es ${name.trim()}, quería un turno el día ${longDate(date)} a las ${time}${barber ? ` con ${barber.name}` : ""}`
       : "";
 
   // Abre WhatsApp con el pedido ya escrito. Solo falta que la persona toque "Enviar".
