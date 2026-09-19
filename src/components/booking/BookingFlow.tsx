@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Check, ChevronLeft, Loader2 } from "lucide-react";
 
 import { barbers } from "@/data/barbers";
@@ -43,6 +43,8 @@ export function BookingFlow() {
   const [barberId, setBarberId] = useState("any");
   const [date, setDate] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState(false);
 
   const [days, setDays] = useState<string[]>([]);
   const [slots, setSlots] = useState<SlotsState>({ status: "idle", times: [] });
@@ -128,9 +130,19 @@ export function BookingFlow() {
           `• Día: ${longDate(date)}`,
           `• Horario: ${time} h`,
           "",
-          "Mi nombre es: ",
+          `Mi nombre es: ${name.trim()}`,
         ].join("\n")
       : "";
+
+  // Abre WhatsApp con el pedido ya escrito. Solo falta que la persona toque "Enviar".
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (name.trim().length < 2) {
+      setNameError(true);
+      return;
+    }
+    window.open(whatsappUrl(whatsappMessage), "_blank", "noopener,noreferrer");
+  }
 
   return (
     <div className="card p-5 sm:p-8">
@@ -269,25 +281,50 @@ export function BookingFlow() {
 
           {/* Resumen + pedido por WhatsApp */}
           {service && date && time && (
-            <div className="mt-8 rounded-sm border border-gold/30 p-5">
+            <form
+              onSubmit={onSubmit}
+              noValidate
+              className="mt-8 rounded-sm border border-gold/30 p-5"
+            >
               <dl className="grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
                 <SummaryRow label="Servicio" value={`${service.name} · ${formatPrice(service.price)}`} />
                 <SummaryRow label="Peluquero" value={barber?.name ?? "Sin preferencia"} />
                 <SummaryRow label="Día" value={longDate(date)} className="capitalize" />
                 <SummaryRow label="Horario" value={`${time} h`} />
               </dl>
-              <Button
-                href={whatsappUrl(whatsappMessage)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 w-full"
-              >
-                <WhatsAppIcon className="h-4 w-4" /> Reservar por WhatsApp
+
+              <label className="mt-6 block">
+                <span className="mb-1.5 block text-xs uppercase tracking-[0.18em] text-bone-muted">
+                  Tu nombre
+                </span>
+                <input
+                  type="text"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (nameError) setNameError(false);
+                  }}
+                  aria-invalid={nameError}
+                  maxLength={60}
+                  placeholder="Nombre y apellido"
+                  className="w-full rounded-sm border border-white/15 bg-coal px-4 py-3 text-bone placeholder:text-bone-muted/60 focus:border-gold focus:outline-none aria-[invalid=true]:border-red-400"
+                />
+                {nameError && (
+                  <span className="mt-1.5 block text-sm text-red-300">
+                    Ingresá tu nombre para continuar.
+                  </span>
+                )}
+              </label>
+
+              <Button type="submit" className="mt-5 w-full">
+                <WhatsAppIcon className="h-4 w-4" /> Ir a WhatsApp
               </Button>
               <p className="mt-3 text-center text-xs text-bone-muted">
-                El turno queda reservado cuando te confirmemos por WhatsApp.
+                Se abre WhatsApp con tu pedido escrito: solo tocá &quot;Enviar&quot;. El turno queda
+                reservado cuando te confirmemos.
               </p>
-            </div>
+            </form>
           )}
         </div>
       )}
