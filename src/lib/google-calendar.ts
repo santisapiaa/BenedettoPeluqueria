@@ -1,15 +1,13 @@
 import { google, type calendar_v3 } from "googleapis";
 
 import { barbers, type Barber } from "@/data/barbers";
-import type { Service } from "@/data/services";
 import { eventsToBusy, type Busy } from "@/lib/availability";
-import { formatPrice } from "@/lib/utils";
-import { TZ, TZ_OFFSET, addDays, toHHMM, toMinutes } from "@/lib/time";
+import { TZ_OFFSET, addDays } from "@/lib/time";
 
 /**
  * live = Google Calendar configurado (producción real)
- * demo = sin Google Calendar, pero se permite probar la interfaz (no guarda nada)
- * off  = sin configurar: las reservas online quedan deshabilitadas
+ * demo = sin Google Calendar, pero se permite probar la interfaz con horarios de ejemplo
+ * off  = sin configurar: los horarios online quedan deshabilitados (se ofrece WhatsApp)
  */
 export type BookingMode = "live" | "demo" | "off";
 
@@ -60,7 +58,8 @@ function getCalendar() {
   const auth = new google.auth.JWT({
     email,
     key,
-    scopes: ["https://www.googleapis.com/auth/calendar"],
+    // Solo lectura: la web nunca crea ni modifica turnos.
+    scopes: ["https://www.googleapis.com/auth/calendar.readonly"],
   });
   cached = google.calendar({ version: "v3", auth });
   return cached;
@@ -120,51 +119,6 @@ export async function fetchBusy(date: string): Promise<Busy[]> {
   return lists.flat();
 }
 
-type CreateArgs = {
-  date: string;
-  time: string;
-  service: Service;
-  barber: Barber;
-  customer: { name: string; email: string; phone: string };
-};
-
-export async function createBookingEvent({
-  date,
-  time,
-  service,
-  barber,
-  customer,
-}: CreateArgs) {
-  const startMin = toMinutes(time);
-  const end = toHHMM(startMin + service.duration);
-
-  // Nota: las cuentas de servicio no pueden invitar asistentes sin delegación
-  // de dominio, por eso los datos del cliente van en la descripción.
-  const event: calendar_v3.Schema$Event = {
-    summary: `${service.name} · ${customer.name}`,
-    description: [
-      `Servicio: ${service.name} (${formatPrice(service.price)})`,
-      `Peluquero: ${barber.name}`,
-      `Cliente: ${customer.name}`,
-      `Teléfono: ${customer.phone}`,
-      `Email: ${customer.email}`,
-      "",
-      "Reservado desde la web.",
-    ].join("\n"),
-    start: { dateTime: `${date}T${time}:00${TZ_OFFSET}`, timeZone: TZ },
-    end: { dateTime: `${date}T${end}:00${TZ_OFFSET}`, timeZone: TZ },
-    ...(barber.colorId ? { colorId: barber.colorId } : {}),
-    extendedProperties: {
-      private: { barberId: barber.id, serviceId: service.id, source: "web" },
-    },
-  };
-
-  await getCalendar().events.insert({
-    calendarId: calendarIdFor(barber)!,
-    requestBody: event,
-  });
-}
-
 /** Traduce errores de Google a un mensaje entendible para el diagnóstico. */
 export function describeGoogleError(err: unknown): string {
   const e = err as {
@@ -185,7 +139,7 @@ export function describeGoogleError(err: unknown): string {
     return "No se encontró el calendario: revisá el ID y que esté compartido con la cuenta de servicio.";
   }
   if (status === 403) {
-    return "Sin permiso: activá Google Calendar API y compartí el calendario con la cuenta de servicio con permiso «Realizar cambios en los eventos».";
+    return "Sin permiso: activá Google Calendar API y compartí el calendario con la cuenta de servicio con permiso «Ver todos los detalles de los eventos».";
   }
   return "Error inesperado al conectar con Google Calendar.";
 }

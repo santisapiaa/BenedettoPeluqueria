@@ -7,9 +7,9 @@ export function Booking() {
     <section id="turnos" className="section-y bg-ink">
       <div className="container-x">
         <SectionHeading
-          eyebrow="Reservas online"
+          eyebrow="Turnos"
           title="Reservá tu turno"
-          subtitle="Elegí servicio, peluquero y horario. Los turnos son cada 30 minutos y los horarios que ves están siempre actualizados."
+          subtitle="Mirá los horarios libres y pedí tu turno por WhatsApp: te confirmamos enseguida. Los turnos son cada 30 minutos."
         />
         <Reveal className="mx-auto max-w-3xl">
           <BookingFlow />

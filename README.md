@@ -1,6 +1,6 @@
 # Benedetto Peluquería y Barbería
 
-Landing page con reserva de turnos online. Next.js (App Router) + Tailwind CSS + Framer Motion. Los turnos se guardan en Google Calendar (sin base de datos).
+Landing page que muestra los horarios libres en tiempo real (leídos de Google Calendar, solo lectura) y cierra el turno por WhatsApp. Next.js (App Router) + Tailwind CSS + Framer Motion. Sin base de datos.
 
 ## Desarrollo
 
@@ -10,7 +10,7 @@ cp .env.example .env.local   # completar variables
 npm run dev
 ```
 
-Abrí http://localhost:3000. Sin credenciales de Google, en desarrollo las reservas funcionan en **modo demo** (no guardan nada).
+Abrí http://localhost:3000. Sin credenciales de Google, en desarrollo los horarios funcionan en **modo demo** (no leen ningún calendario).
 
 ## Dónde editar cada cosa
 
@@ -26,8 +26,9 @@ Abrí http://localhost:3000. Sin credenciales de Google, en desarrollo las reser
 
 ## Turnos
 
-- `GET /api/availability`: horarios libres (consulta Google Calendar).
-- `POST /api/bookings`: revalida disponibilidad y crea el evento.
+- `GET /api/availability`: horarios libres del día (consulta Google Calendar).
 - `GET /api/booking-status`: diagnóstico de la conexión con Google.
 
-Configuración paso a paso: [docs/GOOGLE_CALENDAR.md](docs/GOOGLE_CALENDAR.md).
+El cliente elige servicio, peluquero y horario, y la web abre WhatsApp con el pedido escrito. Los peluqueros cargan el turno a mano en su calendario.
+
+Configuración: [docs/GOOGLE_CALENDAR.md](docs/GOOGLE_CALENDAR.md).
