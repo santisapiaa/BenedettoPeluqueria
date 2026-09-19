@@ -4,8 +4,13 @@ Objetivo: que los turnos que se reservan en la web aparezcan solos en el
 Google Calendar de la peluquería, y que la web sepa qué horarios ya están
 ocupados.
 
-**Tiempo estimado: 20–30 minutos.** Se hace una sola vez, desde la
-computadora de la peluquería, con la cuenta de Google de la peluquería.
+**Tiempo estimado: 20–30 minutos.** Se hace una sola vez.
+
+> 💡 **No hace falta usar la computadora de la peluquería para todo.** La
+> Parte B (crear el "usuario robot") se puede hacer con **cualquier cuenta de
+> Google**, por ejemplo la tuya. Del lado de la peluquería solo se necesita
+> el **dueño del calendario** para dos cosas: copiar el ID (Parte A) y
+> compartirlo con el robot (Parte C). Son 2–3 minutos.
 
 Vas a necesitar tres datos al final:
 
@@ -43,7 +48,8 @@ turnos a mano** (los que diferencian por colores).
 
 ## Parte B — Crear el "usuario robot" en Google Cloud
 
-1. Entrá a <https://console.cloud.google.com> con **la misma cuenta**.
+1. Entrá a <https://console.cloud.google.com> con tu cuenta de Google (no
+   tiene que ser la de la peluquería).
    Si es la primera vez, aceptá los términos de servicio (no pide tarjeta
    para esto).
 2. Arriba a la izquierda, tocá el selector de proyectos → **"Proyecto nuevo"**.
