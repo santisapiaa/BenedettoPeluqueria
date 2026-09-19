@@ -1,11 +1,23 @@
 const FOUNDED_YEAR = 2019;
 
+/**
+ * URL pública del sitio. Se usa `||` (no `??`) porque en Vercel una variable
+ * vacía llega como "" y `new URL("")` rompe el build.
+ */
+function resolveSiteUrl() {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.startsWith("http") ? explicit : `https://${explicit}`;
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (vercel) return `https://${vercel}`;
+  return "http://localhost:3000";
+}
+
 export const siteConfig = {
   name: "Benedetto",
   tagline: "Peluquería & Barbería",
   description:
     "Peluquería y barbería en Villa del Parque desde 2019. Cortes, barba y atención personalizada. Reservá tu turno online en Benedetto.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: resolveSiteUrl(),
   foundedYear: FOUNDED_YEAR,
 
   address: {
@@ -15,7 +27,7 @@ export const siteConfig = {
   },
   phone: "11 2524-8201",
   // Formato internacional sin "+": 54 (AR) + 9 (móvil) + 11 (área) + número
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "5491125248201",
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.trim() || "5491125248201",
   whatsappMessage: "¡Hola Benedetto! Quisiera consultar por un turno.",
 
   instagram: {

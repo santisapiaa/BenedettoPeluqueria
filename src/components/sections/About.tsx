@@ -41,15 +41,17 @@ export function About() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <Reveal>
             <p className="text-lg leading-relaxed text-bone/90">
-              Somos Martín y Federico Madonia, y abrimos las puertas en Villa
-              del Parque con una idea simple: el trabajo bien hecho no tiene
-              apuro. Cada cliente es distinto, así que primero escuchamos y
-              después cortamos.
+              Benedetto es un oficio que pasa de padre a hijo. Martín Madonia
+              lleva años detrás del sillón y llegó a tener varias sucursales de
+              Benedetto; hoy concentra toda esa experiencia en un solo lugar,
+              el de Cuenca, en Villa del Parque.
             </p>
             <p className="mt-4 leading-relaxed text-bone-muted">
-              Con los años se armó algo más que una clientela: una comunidad de
-              gente fiel que vuelve corte tras corte, y que es lo que más nos
-              enorgullece.
+              Junto a él trabaja su hijo Federico, de 22 años, que empezó a
+              cortar hace unos tres años y suma mirada joven y técnicas
+              actuales. Dos generaciones, una misma idea: el trabajo bien hecho
+              no tiene apuro, y cada cliente merece que lo escuchen antes de
+              cortar.
             </p>
             <div className="mt-10 grid grid-cols-2 gap-4 border-y border-gold/15 py-8">
               {siteConfig.stats.map((s) => (

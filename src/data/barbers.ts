@@ -14,14 +14,14 @@ export const barbers: Barber[] = [
   {
     id: "martin",
     name: "Martín Madonia",
-    bio: "Cortes clásicos y trabajo a navaja.",
+    bio: "Fundador. Años de oficio y cortes clásicos a navaja.",
     // De martes a viernes entra a las 11:00 (el local abre a las 10:00).
     lateStart: { days: [2, 3, 4, 5], from: "11:00" },
   },
   {
     id: "federico",
     name: "Federico Madonia",
-    bio: "Cortes a medida y atención personalizada.",
+    bio: "Nueva generación: cortes actuales con la escuela de su padre.",
   },
 ];
 
