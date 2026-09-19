@@ -1,13 +1,14 @@
 import { Star } from "lucide-react";
 
 import { reviews } from "@/data/reviews";
-import { siteConfig } from "@/lib/site";
+import { siteConfig, writeReviewUrl } from "@/lib/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 
 export function Reviews() {
   const hasReviews = reviews.length > 0;
+  const writeUrl = writeReviewUrl();
 
   return (
     <section id="resenas" className="section-y bg-ink">
@@ -57,15 +58,27 @@ export function Reviews() {
           </ul>
         )}
 
-        <Reveal className="mt-10 flex justify-center">
+        <Reveal className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          {writeUrl && (
+            <Button
+              href={writeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto"
+            >
+              <Star className="h-4 w-4" />
+              Dejar mi reseña
+            </Button>
+          )}
           <Button
             href={siteConfig.reviewsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            variant={hasReviews ? "outline" : "primary"}
+            variant={writeUrl ? "outline" : "primary"}
+            className="w-full sm:w-auto"
           >
-            <Star className="h-4 w-4" />
-            {hasReviews ? "Ver todas las reseñas en Google" : "Ver y dejar reseñas en Google"}
+            {!writeUrl && <Star className="h-4 w-4" />}
+            {writeUrl ? "Ver todas las reseñas" : "Ver reseñas en Google"}
           </Button>
         </Reveal>
       </div>

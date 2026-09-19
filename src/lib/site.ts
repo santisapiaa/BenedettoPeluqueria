@@ -42,8 +42,15 @@ export const siteConfig = {
     instagram: "https://www.instagram.com/pelusones.ok",
   },
 
-  /** Reseñas de Google (link acortado): ver y dejar opiniones. */
+  /** Reseñas de Google (link acortado): ver las opiniones. */
   reviewsUrl: "https://bit.ly/4xynH58",
+  /**
+   * Place ID de Google (empieza con "ChIJ…"). Con él, el botón "Dejar mi reseña"
+   * abre directamente el cuadro para escribir la opinión.
+   * TODO: completar. Se obtiene en
+   * https://developers.google.com/maps/documentation/places/web-service/place-id
+   */
+  googlePlaceId: "",
 
   /** Horarios para mostrar en la sección de contacto. */
   hours: [
@@ -85,6 +92,12 @@ export const navLinks = [
   { href: "#resenas", label: "Reseñas" },
   { href: "#ubicacion", label: "Ubicación" },
 ] as const;
+
+/** Link que abre directo el cuadro "Escribir una reseña" en Google (o null si falta el Place ID). */
+export function writeReviewUrl() {
+  const id = siteConfig.googlePlaceId;
+  return id ? `https://search.google.com/local/writereview?placeid=${id}` : null;
+}
 
 export function whatsappUrl(message: string = siteConfig.whatsappMessage) {
   return `https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(message)}`;
