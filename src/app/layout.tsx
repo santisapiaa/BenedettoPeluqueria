@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Oswald, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 import { Navbar } from "@/components/layout/Navbar";
@@ -7,18 +7,11 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
 import { siteConfig } from "@/lib/site";
 
-// Display: condensada y contundente, aire a cartelería rockera / industrial.
-const display = Oswald({
+// Serif clásica para títulos: sobria, con peso y tradición.
+const display = Playfair_Display({
   subsets: ["latin"],
+  weight: ["500", "600", "700"],
   variable: "--font-display",
-  display: "swap",
-});
-
-// Serif itálica para acentos "vintage" dentro de los títulos.
-const serif = Playfair_Display({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  variable: "--font-serif",
   display: "swap",
 });
 
@@ -31,7 +24,7 @@ const sans = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | ${siteConfig.tagline}`,
+    default: `${siteConfig.name} | ${siteConfig.tagline} en Villa del Parque`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -67,10 +60,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="es-AR"
-      className={`${display.variable} ${serif.variable} ${sans.variable}`}
-    >
+    <html lang="es-AR" className={`${display.variable} ${sans.variable}`}>
       <body>
         <script
           type="application/ld+json"

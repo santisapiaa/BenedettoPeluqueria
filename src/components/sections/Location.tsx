@@ -10,14 +10,10 @@ export function Location() {
   return (
     <section id="ubicacion" className="section-y bg-coal">
       <div className="container-x">
-        <SectionHeading
-          eyebrow="Encontranos"
-          title="Ubicación y"
-          accent="contacto"
-        />
+        <SectionHeading eyebrow="Encontranos" title="Ubicación y contacto" />
 
-        <div className="grid gap-8 lg:grid-cols-5">
-          <Reveal className="space-y-6 lg:col-span-2">
+        <div className="grid gap-10 lg:grid-cols-5">
+          <Reveal className="space-y-7 lg:col-span-2">
             <InfoRow icon={MapPin} title="Dirección">
               {siteConfig.address.street}
               <br />
@@ -25,17 +21,17 @@ export function Location() {
             </InfoRow>
 
             <InfoRow icon={Clock} title="Horarios">
-              <ul className="space-y-1">
+              <ul className="space-y-2">
                 {siteConfig.hours.map((h) => (
-                  <li key={h.days} className="flex justify-between gap-6">
-                    <span>{h.days}</span>
-                    <span className="text-bone">{h.time}</span>
+                  <li key={h.days}>
+                    <span className="block text-bone">{h.days}</span>
+                    <span>{h.time}</span>
                   </li>
                 ))}
               </ul>
             </InfoRow>
 
-            <InfoRow icon={Phone} title="Contacto">
+            <InfoRow icon={Phone} title="WhatsApp">
               <a
                 href={whatsappUrl()}
                 target="_blank"
@@ -51,14 +47,13 @@ export function Location() {
               target="_blank"
               rel="noopener noreferrer"
               variant="outline"
-              className="w-full sm:w-auto"
             >
               <InstagramIcon className="h-4 w-4" />@{siteConfig.instagram.handle}
             </Button>
           </Reveal>
 
           <Reveal delay={0.1} className="lg:col-span-3">
-            <div className="metal-border overflow-hidden rounded-sm">
+            <div className="overflow-hidden rounded-sm border border-white/10">
               <iframe
                 title="Mapa de Benedetto Peluquería y Barbería"
                 src={mapsEmbedUrl()}
@@ -66,7 +61,7 @@ export function Location() {
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
                 // Tema oscuro para el mapa: invierte y rota el matiz.
-                className="h-[360px] w-full border-0 [filter:invert(92%)_hue-rotate(180deg)_grayscale(0.4)_contrast(0.9)] sm:h-[440px]"
+                className="h-[360px] w-full border-0 [filter:invert(92%)_hue-rotate(180deg)_grayscale(0.5)_contrast(0.9)] sm:h-[440px]"
               />
             </div>
           </Reveal>
@@ -87,11 +82,9 @@ function InfoRow({
 }) {
   return (
     <div className="flex gap-4">
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-gold/40 text-gold">
-        <Icon className="h-5 w-5" />
-      </span>
+      <Icon className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
       <div className="min-w-0 flex-1">
-        <h3 className="mb-1 font-display text-sm uppercase tracking-[0.25em] text-copper-light">
+        <h3 className="mb-1.5 text-xs font-medium uppercase tracking-[0.25em] text-gold">
           {title}
         </h3>
         <div className="text-sm leading-relaxed text-bone-muted">{children}</div>

@@ -1,8 +1,15 @@
 export type Barber = {
   id: string;
   name: string;
-  /** Texto corto para el paso "Elegí tu peluquero". */
+  role: string;
+  /** Texto corto para la sección de equipo y el paso "Elegí tu peluquero". */
   bio: string;
+  /**
+   * Color con el que se marcan sus turnos en Google Calendar (colorId 1–11).
+   * Sirve para saber de quién es cada turno cargado a mano.
+   * TODO: completar cuando tengamos los colores que usan.
+   */
+  colorId?: string;
   /**
    * Días en que empieza más tarde que la apertura del local.
    * days: 0 = domingo … 6 = sábado.
@@ -14,13 +21,15 @@ export const barbers: Barber[] = [
   {
     id: "martin",
     name: "Martín Madonia",
-    bio: "Fundador. Años de oficio y cortes clásicos a navaja.",
+    role: "Fundador · Peluquero",
+    bio: "Años de oficio y cortes clásicos a navaja.",
     // De martes a viernes entra a las 11:00 (el local abre a las 10:00).
     lateStart: { days: [2, 3, 4, 5], from: "11:00" },
   },
   {
     id: "federico",
     name: "Federico Madonia",
+    role: "Peluquero",
     bio: "Nueva generación: cortes actuales con la escuela de su padre.",
   },
 ];
@@ -32,9 +41,9 @@ export const barbers: Barber[] = [
 export const colorist = {
   name: "Alexander",
   role: "Colorista",
-  days: "Martes y Sábados",
+  days: "Martes y sábados",
   description:
-    "Color, mechas y cambios de look. Trabaja con su propia agenda y precios: consultale directamente.",
+    "Color, mechas y cambios de look. Trabaja con su propia agenda y sus propios precios: consultale directamente.",
   whatsappMessage:
     "¡Hola! Quisiera consultar precios y turnos de color con Alexander.",
 };
