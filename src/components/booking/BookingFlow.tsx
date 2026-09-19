@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { Check, ChevronLeft, Loader2 } from "lucide-react";
+import { track } from "@vercel/analytics";
 
 import { barbers } from "@/data/barbers";
 import { getService, services } from "@/data/services";
@@ -133,6 +134,8 @@ export function BookingFlow() {
       setNameError(true);
       return;
     }
+    // Métrica (solo cuenta pedidos; no envía datos personales).
+    track("pedido_whatsapp", { servicio: service?.id ?? "", peluquero: barberId });
     window.open(whatsappUrl(whatsappMessage), "_blank", "noopener,noreferrer");
   }
 

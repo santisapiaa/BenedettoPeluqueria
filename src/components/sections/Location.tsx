@@ -1,6 +1,12 @@
-import { Clock, MapPin, Phone } from "lucide-react";
+import { Clock, MapPin, Navigation, Phone, PhoneCall } from "lucide-react";
 
-import { mapsEmbedUrl, siteConfig, whatsappUrl } from "@/lib/site";
+import {
+  directionsUrl,
+  mapsEmbedUrl,
+  phoneHref,
+  siteConfig,
+  whatsappUrl,
+} from "@/lib/site";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
@@ -42,14 +48,26 @@ export function Location() {
               </a>
             </InfoRow>
 
-            <Button
-              href={siteConfig.instagram.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="outline"
-            >
-              <InstagramIcon className="h-4 w-4" />@{siteConfig.instagram.handle}
-            </Button>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Button
+                href={directionsUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Navigation className="h-4 w-4" /> Cómo llegar
+              </Button>
+              <Button href={phoneHref()} variant="outline">
+                <PhoneCall className="h-4 w-4" /> Llamar
+              </Button>
+              <Button
+                href={siteConfig.instagram.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outline"
+              >
+                <InstagramIcon className="h-4 w-4" /> Instagram
+              </Button>
+            </div>
           </Reveal>
 
           <Reveal delay={0.1} className="lg:col-span-3">

@@ -5,7 +5,8 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
-import { siteConfig } from "@/lib/site";
+import { Analytics } from "@vercel/analytics/next";
+import { openingHours, siteConfig } from "@/lib/site";
 
 // Serif clásica para títulos: sobria, con peso y tradición.
 const display = Playfair_Display({
@@ -55,13 +56,34 @@ export const viewport: Viewport = {
   themeColor: "#121212",
 };
 
+const SCHEMA_DAYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+// Datos estructurados para Google: horarios, dirección y redes del local.
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "HairSalon",
   name: `${siteConfig.name} ${siteConfig.tagline}`,
   url: siteConfig.url,
-  telephone: siteConfig.phone,
+  image: `${siteConfig.url}/opengraph-image.jpg`,
+  telephone: `+${siteConfig.whatsapp}`,
+  hasMap: `https://www.google.com/maps/place/?q=place_id:${siteConfig.googlePlaceId}`,
   sameAs: [siteConfig.instagram.url],
+  openingHoursSpecification: Object.entries(openingHours).flatMap(([dow, ranges]) =>
+    ranges.map(([opens, closes]) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: SCHEMA_DAYS[Number(dow)],
+      opens,
+      closes,
+    })),
+  ),
   address: {
     "@type": "PostalAddress",
     streetAddress: siteConfig.address.street,
@@ -88,6 +110,7 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <WhatsAppFloat />
+        <Analytics />
       </body>
     </html>
   );

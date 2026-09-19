@@ -19,6 +19,8 @@ Abrí http://localhost:3000. Sin credenciales de Google, en desarrollo los horar
 | Dirección, teléfono, horarios, redes | `src/lib/site.ts` |
 | Servicios, precios, duraciones | `src/data/services.ts` |
 | Peluqueros, colores de calendario, colorista | `src/data/barbers.ts` |
+| Avisos (feriados, cierres) | `src/data/announcements.ts` |
+| Reseñas destacadas | `src/data/reviews.ts` |
 | Fotos del local | copiar a `public/gallery/local/` |
 | Fotos de cortes | copiar a `public/gallery/cortes/` |
 | Fotos del equipo | `public/team/martin.jpg`, `public/team/federico.jpg` |
@@ -32,3 +34,14 @@ Abrí http://localhost:3000. Sin credenciales de Google, en desarrollo los horar
 El cliente elige servicio, peluquero y horario, y la web abre WhatsApp con el pedido escrito. Los peluqueros cargan el turno a mano en su calendario.
 
 Configuración: [docs/GOOGLE_CALENDAR.md](docs/GOOGLE_CALENDAR.md).
+
+## Avisos de feriados o cierres
+
+Agregá una línea en `src/data/announcements.ts` con el mensaje y, opcionalmente, `from` y `until` (YYYY-MM-DD). Aparece en el inicio y sobre los turnos, y se oculta solo pasada la fecha `until`.
+
+## Extras
+
+- Cartel "Abierto ahora / Cerrado": se calcula solo con los horarios de `src/lib/site.ts`.
+- Métricas: Vercel Web Analytics (visitas) y el evento `pedido_whatsapp` (los eventos personalizados requieren plan Pro de Vercel).
+- `docs/qr/`: QR y cartel imprimible para pedir reseñas en Google.
+- Cuando haya dominio propio: cargar `NEXT_PUBLIC_SITE_URL` en Vercel y registrar el sitio en Google Search Console (el sitemap está en `/sitemap.xml`).

@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 
 import { siteConfig } from "@/lib/site";
 import { Button } from "@/components/ui/Button";
+import { OpenStatus } from "@/components/ui/OpenStatus";
+import { Announcements } from "@/components/ui/Announcements";
 
 const container = {
   hidden: {},
@@ -27,6 +29,11 @@ export function HeroContent() {
       animate="show"
       className="container-x relative z-10 pb-14 pt-36"
     >
+      <motion.div variants={item} className="mb-6 max-w-xl space-y-4">
+        <OpenStatus />
+        <Announcements />
+      </motion.div>
+
       <motion.p
         variants={item}
         className="mb-6 text-xs font-medium uppercase tracking-[0.3em] text-gold"
