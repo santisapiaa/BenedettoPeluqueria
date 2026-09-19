@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 
-import {
-  bookingMode,
-  describeGoogleError,
-  pingCalendar,
-} from "@/lib/google-calendar";
+import { bookingMode, checkCalendars } from "@/lib/google-calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -21,15 +17,18 @@ export async function GET() {
       ok: false,
       mode,
       message:
-        "Faltan variables de entorno de Google Calendar (GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_CALENDAR_ID).",
+        "Faltan variables de entorno: GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY y el ID de calendario de cada peluquero (GOOGLE_CALENDAR_ID_MARTIN y GOOGLE_CALENDAR_ID_FEDERICO, o un GOOGLE_CALENDAR_ID compartido).",
     });
   }
 
-  try {
-    await pingCalendar();
-    return NextResponse.json({ ok: true, mode, message: "Conexión con Google Calendar correcta." });
-  } catch (err) {
-    console.error("[booking-status]", err);
-    return NextResponse.json({ ok: false, mode, message: describeGoogleError(err) });
-  }
+  const calendars = await checkCalendars();
+  const ok = calendars.every((c) => c.ok);
+  return NextResponse.json({
+    ok,
+    mode,
+    message: ok
+      ? "Conexión con Google Calendar correcta."
+      : "Hay calendarios con problemas: mirá el detalle.",
+    calendars,
+  });
 }

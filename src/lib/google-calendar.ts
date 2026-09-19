@@ -2,7 +2,7 @@ import { google, type calendar_v3 } from "googleapis";
 
 import { barbers, type Barber } from "@/data/barbers";
 import type { Service } from "@/data/services";
-import type { Busy } from "@/lib/availability";
+import { eventsToBusy, type Busy } from "@/lib/availability";
 import { formatPrice } from "@/lib/utils";
 import { TZ, TZ_OFFSET, addDays, toHHMM, toMinutes } from "@/lib/time";
 
@@ -13,19 +13,32 @@ import { TZ, TZ_OFFSET, addDays, toHHMM, toMinutes } from "@/lib/time";
  */
 export type BookingMode = "live" | "demo" | "off";
 
-function env() {
+function credentials() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
   // Acepta la clave con saltos de línea reales o con "\n" literales, con o sin comillas.
   const key = process.env.GOOGLE_PRIVATE_KEY?.trim()
     .replace(/^"|"$/g, "")
     .replace(/\\n/g, "\n");
-  const calendarId = process.env.GOOGLE_CALENDAR_ID?.trim();
-  return { email, key, calendarId };
+  return { email, key };
+}
+
+/**
+ * Cada peluquero puede tener su propio calendario:
+ *   GOOGLE_CALENDAR_ID_MARTIN, GOOGLE_CALENDAR_ID_FEDERICO
+ * o compartir uno solo (GOOGLE_CALENDAR_ID), distinguidos por color.
+ * El calendario propio tiene prioridad sobre el compartido.
+ */
+function ownCalendarId(b: Barber) {
+  return process.env[`GOOGLE_CALENDAR_ID_${b.id.toUpperCase()}`]?.trim() || undefined;
+}
+
+function calendarIdFor(b: Barber) {
+  return ownCalendarId(b) ?? process.env.GOOGLE_CALENDAR_ID?.trim() ?? undefined;
 }
 
 export function isCalendarConfigured() {
-  const { email, key, calendarId } = env();
-  return Boolean(email && key && calendarId);
+  const { email, key } = credentials();
+  return Boolean(email && key && barbers.every((b) => calendarIdFor(b)));
 }
 
 export function bookingMode(): BookingMode {
@@ -43,7 +56,7 @@ let cached: calendar_v3.Calendar | null = null;
 
 function getCalendar() {
   if (cached) return cached;
-  const { email, key } = env();
+  const { email, key } = credentials();
   const auth = new google.auth.JWT({
     email,
     key,
@@ -53,63 +66,58 @@ function getCalendar() {
   return cached;
 }
 
-function calendarId() {
-  return env().calendarId!;
-}
-
-/** Chequeo liviano para /api/booking-status. */
-export async function pingCalendar() {
-  await getCalendar().events.list({ calendarId: calendarId(), maxResults: 1 });
-}
-
-/**
- * Trae los eventos del día y los convierte en intervalos ocupados.
- * El dueño de cada turno se deduce de (en este orden):
- *   1. la marca barberId que guardamos en los turnos creados desde la web,
- *   2. el color del evento (colorId) configurado en data/barbers.ts,
- *   3. si no se puede deducir, se asume que ocupa a todos (lado seguro).
- */
-export async function fetchBusy(date: string): Promise<Busy[]> {
-  const res = await getCalendar().events.list({
-    calendarId: calendarId(),
-    timeMin: `${date}T00:00:00${TZ_OFFSET}`,
-    timeMax: `${addDays(date, 1)}T00:00:00${TZ_OFFSET}`,
-    singleEvents: true,
-    orderBy: "startTime",
-    maxResults: 250,
-  });
-
-  const dayStart = Date.parse(`${date}T00:00:00${TZ_OFFSET}`);
-  const byColor = new Map(
-    barbers.filter((b) => b.colorId).map((b) => [b.colorId!, b.id]),
-  );
-  const busy: Busy[] = [];
-
-  for (const e of res.data.items ?? []) {
-    if (e.status === "cancelled") continue;
-    // Eventos marcados como "Disponible" no bloquean el horario.
-    if (e.transparency === "transparent") continue;
-
-    const barberId =
-      e.extendedProperties?.private?.barberId ??
-      (e.colorId ? byColor.get(e.colorId) : undefined) ??
-      null;
-
-    if (e.start?.date) {
-      // Evento de día completo (feriado, vacaciones…): ocupa todo el día.
-      busy.push({ start: 0, end: 24 * 60, barberId });
-      continue;
-    }
-    if (!e.start?.dateTime || !e.end?.dateTime) continue;
-
-    busy.push({
-      start: (Date.parse(e.start.dateTime) - dayStart) / 60000,
-      end: (Date.parse(e.end.dateTime) - dayStart) / 60000,
-      barberId,
-    });
+/** Calendarios distintos a consultar, con quién es el dueño (null = compartido). */
+function calendarSources() {
+  const sources = new Map<
+    string,
+    { calendarId: string; owner: string | null; barberNames: string[] }
+  >();
+  for (const b of barbers) {
+    const calendarId = calendarIdFor(b)!;
+    const owner = ownCalendarId(b) ? b.id : null;
+    const key = `${calendarId}|${owner}`;
+    const entry = sources.get(key) ?? { calendarId, owner, barberNames: [] };
+    entry.barberNames.push(b.name);
+    sources.set(key, entry);
   }
+  return [...sources.values()];
+}
 
-  return busy;
+/** Chequeo para /api/booking-status: prueba cada calendario por separado. */
+export async function checkCalendars() {
+  return Promise.all(
+    calendarSources().map(async (s) => {
+      const label = s.barberNames.join(" y ");
+      try {
+        await getCalendar().events.list({
+          calendarId: s.calendarId,
+          maxResults: 1,
+        });
+        return { label, ok: true as const };
+      } catch (err) {
+        console.error(`[booking-status] ${label}`, err);
+        return { label, ok: false as const, message: describeGoogleError(err) };
+      }
+    }),
+  );
+}
+
+/** Trae los eventos del día de todos los calendarios y los convierte en intervalos ocupados. */
+export async function fetchBusy(date: string): Promise<Busy[]> {
+  const lists = await Promise.all(
+    calendarSources().map(async (s) => {
+      const res = await getCalendar().events.list({
+        calendarId: s.calendarId,
+        timeMin: `${date}T00:00:00${TZ_OFFSET}`,
+        timeMax: `${addDays(date, 1)}T00:00:00${TZ_OFFSET}`,
+        singleEvents: true,
+        orderBy: "startTime",
+        maxResults: 250,
+      });
+      return eventsToBusy(res.data.items ?? [], date, s.owner);
+    }),
+  );
+  return lists.flat();
 }
 
 type CreateArgs = {
@@ -152,7 +160,7 @@ export async function createBookingEvent({
   };
 
   await getCalendar().events.insert({
-    calendarId: calendarId(),
+    calendarId: calendarIdFor(barber)!,
     requestBody: event,
   });
 }
@@ -174,7 +182,7 @@ export function describeGoogleError(err: unknown): string {
     return "Credenciales inválidas: revisá GOOGLE_SERVICE_ACCOUNT_EMAIL y GOOGLE_PRIVATE_KEY.";
   }
   if (status === 404) {
-    return "No se encontró el calendario: revisá GOOGLE_CALENDAR_ID y que esté compartido con la cuenta de servicio.";
+    return "No se encontró el calendario: revisá el ID y que esté compartido con la cuenta de servicio.";
   }
   if (status === 403) {
     return "Sin permiso: activá Google Calendar API y compartí el calendario con la cuenta de servicio con permiso «Realizar cambios en los eventos».";

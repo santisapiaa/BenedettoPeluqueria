@@ -18,7 +18,7 @@ Vas a necesitar tres datos al final:
 |---|---|---|
 | Email de la cuenta de servicio | Es el "usuario robot" de la web | `turnos-web@benedetto-turnos.iam.gserviceaccount.com` |
 | Clave privada | Es la "contraseña" de ese robot | un texto largo que empieza con `-----BEGIN PRIVATE KEY-----` |
-| ID del calendario | Indica en qué calendario se cargan los turnos | `abc123...@group.calendar.google.com` |
+| ID del calendario de **cada peluquero** | Indica en qué calendario se cargan los turnos de cada uno | `abc123...@group.calendar.google.com` |
 
 > ⚠️ **La clave privada es como una contraseña.** No la mandes por WhatsApp
 > ni por mail, no la subas a GitHub y borrá el archivo cuando termines
@@ -26,22 +26,30 @@ Vas a necesitar tres datos al final:
 
 ---
 
-## Parte A — Elegir el calendario
+## Parte A — Elegir los calendarios
 
-Importante: la web lee este calendario para saber qué horarios están
-ocupados, así que **tiene que ser el mismo calendario donde ya cargan los
-turnos a mano** (los que diferencian por colores).
+Importante: la web lee estos calendarios para saber qué horarios están
+ocupados, así que **tienen que ser los mismos donde ya cargan los turnos a
+mano**.
+
+La web soporta dos formas de trabajo:
+
+- **Un calendario por peluquero** (recomendado, es el caso de Benedetto):
+  todo lo que está en el calendario de Martín lo ocupa a él, y lo mismo con
+  Federico. Se cargan `GOOGLE_CALENDAR_ID_MARTIN` y `GOOGLE_CALENDAR_ID_FEDERICO`.
+- **Un solo calendario compartido**, con el color de cada evento para saber de
+  quién es. Se carga `GOOGLE_CALENDAR_ID` y los colores en `src/data/barbers.ts`.
+
+**Repetí estos pasos por cada calendario** (uno para Martín, otro para Federico):
 
 1. Entrá a <https://calendar.google.com> con la cuenta de la peluquería.
 2. A la izquierda, en **"Mis calendarios"**, pasá el mouse por el calendario
-   donde cargan los turnos → tocá los **tres puntitos ⋮** →
+   de esa persona → tocá los **tres puntitos ⋮** →
    **"Configuración y uso compartido"**.
-   - Si no tienen ninguno específico y usan el calendario principal, también
-     sirve. Si preferís separar, podés crear uno nuevo con
-     **"Otros calendarios" → "+" → "Crear calendario nuevo"**.
 3. Bajá hasta la sección **"Integrar el calendario"**.
-4. Copiá el **"ID de calendario"** y guardalo en el Bloc de notas.
-   - Si es el calendario principal, es tu propio email de Gmail.
+4. Copiá el **"ID de calendario"** y anotalo indicando de quién es
+   (por ejemplo: `Martín: abc123@group.calendar.google.com`).
+   - Si es el calendario principal de la cuenta, el ID es el propio email.
 5. Dejá esta pestaña abierta: la vas a necesitar en la Parte C.
 
 ---
@@ -71,7 +79,9 @@ turnos a mano** (los que diferencian por colores).
 
 ---
 
-## Parte C — Compartir el calendario con el robot
+## Parte C — Compartir los calendarios con el robot
+
+**Repetilo para cada calendario** (el de Martín y el de Federico).
 
 1. Volvé a la pestaña de Google Calendar (Parte A, paso 2).
 2. En **"Compartir con personas o grupos específicos"** →
@@ -89,14 +99,18 @@ turnos a mano** (los que diferencian por colores).
    Abrir con → Bloc de notas).
 2. Entrá a <https://vercel.com> → tu proyecto → **Settings** →
    **Environment Variables**.
-3. Creá estas tres variables (marcá los tres entornos: Production, Preview y
-   Development):
+3. Creá estas variables (marcá Production y Preview; Development solo si
+   corrés el sitio con `vercel dev`):
 
    | Nombre | Valor |
    |---|---|
    | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | el valor de `client_email` del JSON |
    | `GOOGLE_PRIVATE_KEY` | el valor de `private_key` del JSON (ver abajo) |
-   | `GOOGLE_CALENDAR_ID` | el ID de la Parte A |
+   | `GOOGLE_CALENDAR_ID_MARTIN` | el ID del calendario de Martín (Parte A) |
+   | `GOOGLE_CALENDAR_ID_FEDERICO` | el ID del calendario de Federico (Parte A) |
+
+   (Si usan **un solo calendario compartido**, creá en cambio una sola variable,
+   `GOOGLE_CALENDAR_ID`.)
 
    **Cómo copiar `private_key`:** en el JSON aparece así:
 
@@ -120,14 +134,23 @@ turnos a mano** (los que diferencian por colores).
 2. Tiene que decir:
 
    ```json
-   { "ok": true, "mode": "live", "message": "Conexión con Google Calendar correcta." }
+   {
+     "ok": true,
+     "mode": "live",
+     "message": "Conexión con Google Calendar correcta.",
+     "calendars": [
+       { "label": "Martín Madonia", "ok": true },
+       { "label": "Federico Madonia", "ok": true }
+     ]
+   }
    ```
 
-3. Si dice `"ok": false`, el mensaje indica qué revisar:
+3. Si dice `"ok": false`, el mensaje indica qué revisar. Con un calendario
+   por peluquero, `calendars` dice **cuál** de los dos falla:
 
    | Mensaje | Causa probable |
    |---|---|
-   | Faltan variables de entorno… | Falta crear alguna de las 3 variables, o falta el Redeploy |
+   | Faltan variables de entorno… | Falta alguna variable (email, clave o algún ID), o falta el Redeploy |
    | La clave privada está mal pegada o incompleta | Volver a copiar `private_key` completa (Parte D) |
    | Credenciales inválidas | El email no coincide con la clave: usar ambos del **mismo** JSON |
    | No se encontró el calendario | ID de calendario mal copiado, o no está compartido (Parte C) |
@@ -148,6 +171,10 @@ turnos a mano** (los que diferencian por colores).
 ---
 
 ## Colores de los turnos
+
+> Si cada peluquero tiene **su propio calendario**, no hace falta configurar
+> colores: se sabe de quién es cada turno por el calendario donde está. Esta
+> sección aplica solo al caso de **un calendario compartido**.
 
 La web distingue los turnos de cada peluquero por el **color del evento**.
 Google Calendar solo expone sus **11 colores estándar** (los personalizados
