@@ -54,7 +54,7 @@ export function Navbar() {
         </a>
 
         {/* Desktop */}
-        <ul className="hidden items-center gap-8 lg:flex">
+        <ul className="hidden items-center gap-6 lg:flex xl:gap-8">
           {navLinks.map((link) => (
             <li key={link.href}>
               <a

@@ -35,6 +35,16 @@ export const siteConfig = {
     url: "https://instagram.com/benedettopeluqueriaybarberia",
   },
 
+  // Banda de la casa
+  pelusones: {
+    url: "https://www.pelusones.com",
+    handle: "pelusones.ok",
+    instagram: "https://www.instagram.com/pelusones.ok",
+  },
+
+  /** Reseñas de Google (link acortado): ver y dejar opiniones. */
+  reviewsUrl: "https://bit.ly/4xynH58",
+
   /** Horarios para mostrar en la sección de contacto. */
   hours: [
     { days: "Martes a Viernes", time: "10:00 – 13:00 y 16:00 – 20:00" },
@@ -72,6 +82,7 @@ export const navLinks = [
   { href: "#historia", label: "Historia" },
   { href: "#servicios", label: "Servicios" },
   { href: "#galeria", label: "Galería" },
+  { href: "#resenas", label: "Reseñas" },
   { href: "#ubicacion", label: "Ubicación" },
 ] as const;
 

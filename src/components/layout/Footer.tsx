@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { navLinks, siteConfig } from "@/lib/site";
 import { InstagramIcon } from "@/components/ui/icons";
 
@@ -6,12 +8,13 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-ink">
       <div className="container-x grid gap-10 py-14 sm:grid-cols-3">
         <div>
-          <span className="font-script text-4xl leading-none text-bone">
-            {siteConfig.name}
-          </span>
-          <p className="mt-1 text-[0.6rem] uppercase tracking-[0.3em] text-gold">
-            Peluquería · Barbería
-          </p>
+          <Image
+            src="/brand/barber-rock.png"
+            alt="Benedetto Peluquería · Ladies & Gents · Barber Rock"
+            width={566}
+            height={470}
+            className="h-auto w-36"
+          />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-bone-muted">
             {siteConfig.address.street}, {siteConfig.address.city}
           </p>
@@ -55,10 +58,11 @@ export function Footer() {
           >
             <InstagramIcon className="h-5 w-5" />@{siteConfig.instagram.handle}
           </a>
+
           <p className="mt-6 text-sm leading-relaxed text-bone-muted">
             ¿Te gusta el rock? Escuchá a{" "}
             <a
-              href="https://www.pelusones.com"
+              href={siteConfig.pelusones.url}
               target="_blank"
               rel="noopener noreferrer"
               className="text-bone underline decoration-gold/50 underline-offset-4 transition-colors hover:text-gold-light"
@@ -67,6 +71,14 @@ export function Footer() {
             </a>
             , la banda de la casa.
           </p>
+          <a
+            href={siteConfig.pelusones.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-2 text-sm text-bone-muted transition-colors hover:text-gold-light"
+          >
+            <InstagramIcon className="h-5 w-5" />@{siteConfig.pelusones.handle}
+          </a>
         </div>
       </div>
 

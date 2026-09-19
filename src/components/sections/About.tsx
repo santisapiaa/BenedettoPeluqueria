@@ -82,7 +82,7 @@ export function About() {
                           alt={b.name}
                           fill
                           sizes="(min-width: 640px) 25vw, 90vw"
-                          className="object-cover"
+                          className="object-cover object-top"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center font-display text-5xl text-gold/40">
