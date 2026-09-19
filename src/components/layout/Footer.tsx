@@ -55,6 +55,18 @@ export function Footer() {
           >
             <InstagramIcon className="h-5 w-5" />@{siteConfig.instagram.handle}
           </a>
+          <p className="mt-6 text-sm leading-relaxed text-bone-muted">
+            ¿Te gusta el rock? Escuchá a{" "}
+            <a
+              href="https://www.pelusones.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-bone underline decoration-gold/50 underline-offset-4 transition-colors hover:text-gold-light"
+            >
+              Pelusones
+            </a>
+            , la banda de la casa.
+          </p>
         </div>
       </div>
 

@@ -123,7 +123,7 @@ export function BookingFlow() {
 
   const whatsappMessage =
     service && date && time
-      ? `Hola! Mi nombre es ${name.trim()}, quería un turno el día ${longDate(date)} a las ${time}${barber ? ` con ${barber.name}` : ""}`
+      ? `Hola! Mi nombre es ${name.trim()}, quería un turno el día ${longDate(date)} a las ${time}${barber ? ` con ${barber.name.split(" ")[0]}` : ""}`
       : "";
 
   // Abre WhatsApp con el pedido ya escrito. Solo falta que la persona toque "Enviar".
@@ -299,7 +299,7 @@ export function BookingFlow() {
                   }}
                   aria-invalid={nameError}
                   maxLength={60}
-                  placeholder="Nombre y apellido"
+                  placeholder="Tu nombre"
                   className="w-full rounded-sm border border-white/15 bg-coal px-4 py-3 text-bone placeholder:text-bone-muted/60 focus:border-gold focus:outline-none aria-[invalid=true]:border-red-400"
                 />
                 {nameError && (

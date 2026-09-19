@@ -30,7 +30,11 @@ export function Hero() {
       {/* Oscurece la foto para que el texto siempre se lea bien */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-coal via-ink/70 to-ink/50"
+        className="absolute inset-0 bg-gradient-to-t from-coal via-ink/75 to-ink/60"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/50 to-transparent"
       />
       <HeroContent />
     </section>

@@ -7,6 +7,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function About() {
+  // Foto de la historia: public/historia/martin-miami.jpg
+  const martinPhoto = findPublicImage("historia/martin-miami");
+
   return (
     <section id="historia" className="section-y bg-coal">
       <div className="container-x">
@@ -18,21 +21,38 @@ export function About() {
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <p className="text-lg leading-relaxed text-bone/90">
-              Martín Madonia lleva años detrás del sillón y llegó a tener varias
-              sucursales de Benedetto. Hoy concentra toda esa experiencia en un
-              solo lugar: el de Cuenca, en Villa del Parque.
+              Martín Madonia se dedica a esto hace muchos años. De joven cortó
+              el pelo en Miami y, al volver, pasó por distintas zonas con
+              Benedetto hasta quedarse acá, en Cuenca, en Villa del Parque.
             </p>
             <p className="mt-5 leading-relaxed text-bone-muted">
-              Junto a él trabaja su hijo Federico, de 22 años, que empezó a
-              cortar hace unos tres años y suma mirada joven y técnicas
-              actuales. Dos generaciones, una misma idea: el trabajo bien hecho
-              no tiene apuro, y cada cliente merece que lo escuchen antes de
-              cortar.
+              Hoy trabaja junto a su hijo Federico, de 22 años, que empezó a
+              cortar hace unos tres años. Cada uno con su estilo, pero con la
+              misma idea: escuchar bien lo que quiere cada cliente y hacer el
+              corte sin apuro.
             </p>
             <p className="mt-5 leading-relaxed text-bone-muted">
-              Desde {siteConfig.foundedYear} se armó algo más que una clientela:
-              una comunidad de gente fiel que vuelve corte tras corte.
+              Es una peluquería de barrio, con buena música y charla. Desde{" "}
+              {siteConfig.foundedYear} se armó una clientela fiel, gente que
+              vuelve seguido y trae a los suyos.
             </p>
+
+            {martinPhoto && (
+              <figure className="mt-8 flex items-center gap-5">
+                <div className="relative h-44 w-32 shrink-0 overflow-hidden rounded-sm border border-white/10 sm:h-52 sm:w-40">
+                  <Image
+                    src={martinPhoto}
+                    alt="Martín Madonia de joven, cortando el pelo en Miami"
+                    fill
+                    sizes="160px"
+                    className="object-cover"
+                  />
+                </div>
+                <figcaption className="text-sm leading-relaxed text-bone-muted">
+                  Martín, de joven, en sus años cortando el pelo en Miami.
+                </figcaption>
+              </figure>
+            )}
 
             <div className="mt-10 grid grid-cols-2 gap-6 border-t border-white/10 pt-8">
               {siteConfig.stats.map((s) => (
