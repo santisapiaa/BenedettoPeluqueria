@@ -1,8 +1,10 @@
 import { getHoliday } from "@/data/holidays";
-import { openingHours } from "@/lib/site";
+import { openingRangesFor } from "@/lib/site";
 import { addDays, dayOfWeek, nowInBA, toMinutes } from "@/lib/time";
 
 const DAY_NAMES = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+/** Hasta cuántos días adelante se busca el próximo día de apertura. */
+const MAX_LOOKAHEAD_DAYS = 15;
 
 export type OpenStatus =
   | { open: true; closesAt: string }
@@ -20,12 +22,12 @@ export type OpenStatus =
 export function getOpenStatus(now = nowInBA()): OpenStatus {
   const holidayToday = getHoliday(now.date)?.name;
 
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < MAX_LOOKAHEAD_DAYS; i++) {
     const date = addDays(now.date, i);
     if (getHoliday(date)) continue;
     const dow = dayOfWeek(date);
 
-    for (const [from, to] of openingHours[dow] ?? []) {
+    for (const [from, to] of openingRangesFor(date)) {
       if (i === 0) {
         if (now.minutes >= toMinutes(from) && now.minutes < toMinutes(to)) {
           return { open: true, closesAt: to };

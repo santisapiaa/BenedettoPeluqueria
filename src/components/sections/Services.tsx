@@ -4,7 +4,7 @@ import { Clock } from "lucide-react";
 
 import { colorist } from "@/data/barbers";
 import { services } from "@/data/services";
-import { whatsappUrl } from "@/lib/site";
+import { whatsappUrl } from "@/lib/links";
 import { formatPrice } from "@/lib/utils";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";

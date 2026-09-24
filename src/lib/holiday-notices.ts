@@ -1,14 +1,7 @@
 import { holidays, getHoliday, type Holiday } from "@/data/holidays";
-import { openingHours } from "@/lib/site";
-import { addDays, dayOfWeek } from "@/lib/time";
-
-const utc = (opts: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat("es-AR", { ...opts, timeZone: "UTC" });
-
-const noon = (date: string) => new Date(`${date}T12:00:00Z`);
-const weekday = (date: string) => utc({ weekday: "long" }).format(noon(date));
-const month = (date: string) => utc({ month: "long" }).format(noon(date));
-const day = (date: string) => noon(date).getUTCDate();
+import { dayNumber as day, monthName as month, weekdayName as weekday } from "@/lib/date-format";
+import { isOpenDay } from "@/lib/site";
+import { addDays } from "@/lib/time";
 
 /**
  * Avisos automáticos de feriado: desde `daysAhead` días antes hasta el propio
@@ -23,7 +16,7 @@ export function holidayNotices(today: string, daysAhead = 7): string[] {
         h.date >= today &&
         h.date <= limit &&
         getHoliday(h.date) &&
-        openingHours[dayOfWeek(h.date)],
+        isOpenDay(h.date),
     )
     .sort((a, b) => a.date.localeCompare(b.date));
 

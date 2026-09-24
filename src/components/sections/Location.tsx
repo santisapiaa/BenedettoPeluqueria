@@ -1,12 +1,7 @@
 import { Clock, MapPin, Navigation, Phone, PhoneCall } from "lucide-react";
 
-import {
-  directionsUrl,
-  mapsEmbedUrl,
-  phoneHref,
-  siteConfig,
-  whatsappUrl,
-} from "@/lib/site";
+import { siteConfig } from "@/lib/site";
+import { directionsUrl, mapsEmbedUrl, phoneHref, whatsappUrl } from "@/lib/links";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";

@@ -1,6 +1,6 @@
 import { barbers } from "@/data/barbers";
 import { getHoliday } from "@/data/holidays";
-import { SLOT_MINUTES, openingHours } from "@/lib/site";
+import { SLOT_MINUTES, isOpenDay, openingRangesFor } from "@/lib/site";
 import {
   MAX_DAYS_AHEAD,
   MIN_NOTICE_MINUTES,
@@ -100,7 +100,7 @@ export function validateBookableDate(date: string): string | null {
   if (date > addDays(today, MAX_DAYS_AHEAD)) {
     return `Solo se puede reservar con hasta ${MAX_DAYS_AHEAD} días de anticipación.`;
   }
-  if (!openingHours[dayOfWeek(date)]) return "Ese día el local está cerrado.";
+  if (!isOpenDay(date)) return "Ese día el local está cerrado.";
   const holiday = getHoliday(date);
   if (holiday) return `Ese día es feriado (${holiday.name}): el local está cerrado.`;
   return null;
@@ -118,7 +118,7 @@ export function computeSlots({
   now = nowInBA(),
 }: Input): Slot[] {
   if (getHoliday(date)) return [];
-  const ranges = openingHours[dayOfWeek(date)] ?? [];
+  const ranges = openingRangesFor(date);
   const candidates =
     barberId === "any" ? barbers : barbers.filter((b) => b.id === barberId);
   const dow = dayOfWeek(date);

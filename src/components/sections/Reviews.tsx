@@ -1,7 +1,8 @@
 import { Star } from "lucide-react";
 
 import { reviews } from "@/data/reviews";
-import { siteConfig, writeReviewUrl } from "@/lib/site";
+import { siteConfig } from "@/lib/site";
+import { writeReviewUrl } from "@/lib/links";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
