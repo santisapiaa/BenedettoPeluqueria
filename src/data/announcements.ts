@@ -15,4 +15,6 @@ export type Announcement = {
  * Ejemplo:
  *   { message: "El lunes 12 de octubre (feriado) estamos cerrados.", from: "2026-10-05", until: "2026-10-12" },
  */
-export const announcements: Announcement[] = [];
+export const announcements: Announcement[] = [
+  { message: "Hoy viernes 25 atendemos de corrido de 10:00 a 16:00. Por la tarde estamos cerrados.", from: "2026-09-25", until: "2026-09-25" },
+];

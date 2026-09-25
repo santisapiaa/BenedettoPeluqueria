@@ -1,3 +1,4 @@
+import { specialHours } from "@/data/special-hours";
 import { dayOfWeek } from "@/lib/time";
 
 const FOUNDED_YEAR = 2019;
@@ -81,9 +82,12 @@ export const openingHours: Record<number, Array<[string, string]>> = {
   6: [["10:00", "20:00"]],
 };
 
-/** Los tramos de atención de una fecha (vacío si ese día está cerrado). */
+/**
+ * Los tramos de atención de una fecha (vacío si ese día está cerrado).
+ * Un horario especial cargado para esa fecha reemplaza al habitual.
+ */
 export function openingRangesFor(date: string): ReadonlyArray<[string, string]> {
-  return openingHours[dayOfWeek(date)] ?? [];
+  return specialHours[date] ?? openingHours[dayOfWeek(date)] ?? [];
 }
 
 /** ¿Se atiende ese día de la semana? (sin considerar feriados). */
